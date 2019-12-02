@@ -12,7 +12,7 @@ $( document ).ready(function() {
     let second = 0;
     let destination = 0;
 
-    for(let i = 0; i < optcode.length; i += 4){
+    for(let i of _.range(0, optcode.length, 4)){
         switch (optcode[i]) {
             case 1:
                 first = optcode[i + 1];
@@ -38,5 +38,5 @@ $( document ).ready(function() {
         }
     }
 
-    console.log(optcode);
+    console.log("Output: " + optcode[0]);
 });
