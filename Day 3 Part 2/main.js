@@ -3,15 +3,71 @@ class Path {
         this.path = [];
         this.lastX = 0;
         this.lastY = 0;
-        this.steps = 0;
+    }
+
+    static findAllDistances(pathData, intersections){
+        let visited = [];
+        let length = 0;
+        let x = 0;
+        let y = 0;
+
+        let check = function(x, y){
+            if(_.findIndex(intersections, { x: x, y: y }) !== -1){
+                let found = _.findIndex(visited, { x: x, y: y });
+                if(found === -1){
+                    visited.push({ x: x, y: y, length: length})
+                }
+                else if(found.length > length){
+                    visited[found] = { x: x, y: y, length: length};
+                }
+            }
+        };
+
+        for(let pair of pathData){
+            let xv = 0;
+            let yv = 0;
+
+            switch (pair.dir) {
+                case 'U':
+                    yv = pair.num;
+                    break;
+                case 'R':
+                    xv = pair.num;
+                    break;
+                case 'D':
+                    yv = -pair.num;
+                    break;
+                case 'L':
+                    xv = -pair.num;
+                    break;
+            }
+
+            //Add coordinates to the path.
+            let xIt = xv < 0 ? -1 : 1;
+            for(let coordX of _.range(0, xv, xIt)){
+                x += xIt;
+                ++length;
+
+                check(x, y);
+            }
+
+            let yIt = yv < 0 ? -1 : 1;
+            for(let coordY of _.range(0, yv, yIt)){
+                y += yIt;
+                ++length;
+
+                check(x, y);
+            }
+        }
+
+        return visited;
     }
 
     findIntersections(rhs){
         let intersections = [];
         for(let pair of this.path){
-            let index = rhs.path.findIndex((x) => { return x.x === pair.x && x.y === pair.y; });
-            if(index !== -1){
-                intersections.push({ x: pair.x, y: pair.y, totalDist: pair.dist + rhs.path[index].dist });
+            if(rhs.path.findIndex((x) => { return x.x === pair.x && x.y === pair.y; }) !== -1){
+                intersections.push(pair);
             }
         }
         return intersections;
@@ -40,15 +96,13 @@ class Path {
         let xIt = x < 0 ? -1 : 1;
         for(let coordX of _.range(0, x, xIt)){
             this.lastX += xIt;
-            ++this.steps;
-            this.path.push({ x: this.lastX, y: this.lastY, dist: this.steps });
+            this.path.push({ x: this.lastX, y: this.lastY });
         }
 
         let yIt = y < 0 ? -1 : 1;
         for(let coordY of _.range(0, y, yIt)){
             this.lastY += yIt;
-            ++this.steps;
-            this.path.push({ x: this.lastX, y: this.lastY, dist: this.steps });
+            this.path.push({ x: this.lastX, y: this.lastY });
         }
     }
 }
@@ -89,9 +143,15 @@ $( document ).ready(function() {
 
     //Get all intersections.
     const intersections = pathOne.findIntersections(pathTwo);
-    const total = _.chain(intersections).map((intersection) => {
-        return intersection.totalDist;
-    }).sort((distance) => {
+    const firstDistances = Path.findAllDistances(splitPathOne, intersections);
+    const secondDistances = Path.findAllDistances(splitPathTwo, intersections);
+
+    //Combine distances.
+    const total = _.chain(firstDistances).map((pair) => {
+        return pair.length + secondDistances[_.findIndex(secondDistances, (secondPair) => {
+            return secondPair.x === pair.x && secondPair.y === pair.y;
+        })].length;
+    }).sortBy((distance) => {
         return distance;
     }).value();
 
