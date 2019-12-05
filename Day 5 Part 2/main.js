@@ -79,8 +79,7 @@ $( document ).ready(function() {
                 first = getValue(optcode[i + 1], split.par1);
 
                 if(first !== 0){
-                    second = getValue(optcode[i + 2], split.par2);
-                    i = second;
+                    i = getValue(optcode[i + 2], split.par2);
                     stepSize = 0;
                     break;
                 }
@@ -91,8 +90,7 @@ $( document ).ready(function() {
                 first = getValue(optcode[i + 1], split.par1);
 
                 if(first === 0){
-                    second = getValue(optcode[i + 2], split.par2);
-                    i = second;
+                    i = getValue(optcode[i + 2], split.par2);
                     stepSize = 0;
                     break;
                 }
