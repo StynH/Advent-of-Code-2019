@@ -44,7 +44,7 @@ $( document ).ready(function() {
         return bodies[index];
     };
 
-    let depthFirstSearch = (start, end) =>{
+    let breadthFirstSearch = (start, end) =>{
         let path = [];
         let queue = new buckets.Queue();
 
@@ -92,5 +92,5 @@ $( document ).ready(function() {
     const youNode = bodies.filter(b => b.name === you)[0];
     const santaNode = bodies.filter(b => b.name === santa)[0];
 
-    console.log("Amount of jumps: " + (depthFirstSearch(youNode, santaNode).length - 3));
+    console.log("Amount of jumps: " + (breadthFirstSearch(youNode, santaNode).length - 3));
 });
