@@ -45,13 +45,13 @@ $( document ).ready(function() {
     };
 
     let depthFirstSearch = (start, end) =>{
-        let path = [];
-        let queue = new buckets.Queue();
+        const path = [];
+        const queue = new buckets.Queue();
 
         queue.add(start);
 
         while(!queue.isEmpty()){
-            let front = queue.dequeue();
+            const front = queue.dequeue();
 
             if (front === end)
             {
@@ -67,7 +67,7 @@ $( document ).ready(function() {
                 break;
             }
 
-            for (let orbit of front.orbits)
+            for (const orbit of front.orbits)
             {
                 if(orbit.parent === undefined){
                     queue.add(orbit);
